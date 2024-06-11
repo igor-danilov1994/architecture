@@ -13,5 +13,5 @@ const render = async (element) => {
     const player1 = await getPlayer(1)
     const player2 = await getPlayer(2)
 
-    element.append(`Google: ${google}, Player1: ${player1}, Player2: ${player2}`)
+    element.append(`Google: ${JSON.stringify(google, null, 2)}, Player1: ${JSON.stringify(player1, null, 2)}, Player2: ${JSON.stringify(player2, null, 2)}`)
 }
