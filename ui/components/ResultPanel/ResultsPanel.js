@@ -1,7 +1,13 @@
-import {getGoogle, getPlayer} from "../../../core/state-manager.js";
+import {getGoogle, getPlayer, subscribe} from "../../../core/state-manager.js";
+
 
 export const ResultsPanelComponents =  () => {
     const element = document.createElement('div')
+
+    subscribe(() => {
+        render(element)
+    })
+
     render(element)
 
     return {element}
@@ -9,6 +15,7 @@ export const ResultsPanelComponents =  () => {
 
 
 const render = async (element) => {
+    element.innerHTML = ''
     const google = await getGoogle()
     const player1 = await getPlayer(1)
     const player2 = await getPlayer(2)

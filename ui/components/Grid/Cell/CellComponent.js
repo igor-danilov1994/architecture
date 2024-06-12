@@ -2,6 +2,7 @@ import {getPositionGoogle, getPositionPlayer} from "../../../../core/state-manag
 import {GoogleComponent} from "../../common/Google/Google.component.js";
 import {PlayerComponent} from "../../common/Player/Player.component.js";
 
+
 export const CellComponent = (x, y) => {
     const element = document.createElement('td')
     element.classList.add('td')

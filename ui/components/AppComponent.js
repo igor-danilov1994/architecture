@@ -1,15 +1,58 @@
 import {GridComponents} from "./Grid/Grid.js";
 import {SettingsComponents} from "./Settings/Settings.js";
 import {ResultsPanelComponents} from "./ResultPanel/ResultsPanel.js";
+import {LoseComponent} from "./Lose/Lose.component.js";
+import {getGameStatus, start, subscribe} from "../../core/state-manager.js";
+import {GAME_STATUSES} from "../../core/consts.js";
+import {StartComponents} from "./Start/Start.component.js";
 
 export const AppComponent = () => {
+    const localeState = { prevGameStatus: null }
     const element = document.createElement('div')
 
-    const gridComponent  = GridComponents()
-    const settingsComponent = SettingsComponents()
-    const resultsPanelComponent = ResultsPanelComponents()
+    subscribe(() => {
+        render(element, localeState)
+    })
 
-    element.append(resultsPanelComponent.element, settingsComponent.element, gridComponent.element);
+    render(element, localeState)
 
     return {element}
+}
+
+
+const render = async (element, localeState) => {
+    const gameStatus = await getGameStatus()
+
+    if (gameStatus === localeState.prevGameStatus) {
+        return
+    }
+
+    localeState.prevGameStatus = gameStatus
+
+    const settingsComponent = SettingsComponents()
+
+    console.log('RENDER APP')
+
+    element.innerHTML = ''
+
+    switch (gameStatus) {
+        case GAME_STATUSES.SETTINGS:
+            const startComponent = StartComponents()
+
+            element.append(settingsComponent.element, startComponent.element)
+            break
+        case GAME_STATUSES.IN_PROGRESS:
+            const gridComponent  = GridComponents()
+            const resultsPanelComponent = ResultsPanelComponents()
+
+            element.append(resultsPanelComponent.element, settingsComponent.element, gridComponent.element);
+            break
+        case GAME_STATUSES.LOSE:
+            const loseComponent = LoseComponent()
+
+            element.append(loseComponent.element)
+            break
+        default:
+          throw new Error('Not implemented!')
+    }
 }
