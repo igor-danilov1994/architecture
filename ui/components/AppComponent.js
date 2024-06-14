@@ -1,14 +1,14 @@
-import {GridComponents} from "./Grid/Grid.js";
+import {GridComponent} from "./Grid/Grid.js";
 import {SettingsComponents} from "./Settings/Settings.js";
 import {ResultsPanelComponents} from "./ResultPanel/ResultsPanel.js";
 import {LoseComponent} from "./Lose/Lose.component.js";
-import {getGameStatus, start, subscribe} from "../../core/state-manager.js";
+import {getGameStatus, subscribe} from "../../core/state-manager.js";
 import {GAME_STATUSES} from "../../core/consts.js";
 import {StartComponents} from "./Start/Start.component.js";
 import {WinComponent} from "./Win/Win.component.js";
 
 export const AppComponent = () => {
-    const localeState = { prevGameStatus: null }
+    const localeState = {prevGameStatus: null, cleanupFunctions: []}
     const element = document.createElement('div')
 
     subscribe(() => {
@@ -19,7 +19,6 @@ export const AppComponent = () => {
 
     return {element}
 }
-
 
 const render = async (element, localeState) => {
     const gameStatus = await getGameStatus()
@@ -32,7 +31,8 @@ const render = async (element, localeState) => {
 
     const settingsComponent = SettingsComponents()
 
-    console.log('RENDER APP')
+    localeState.cleanupFunctions.forEach(cf => cf())
+    localeState.cleanupFunctions = []
 
     element.innerHTML = ''
 
@@ -43,8 +43,11 @@ const render = async (element, localeState) => {
             element.append(settingsComponent.element, startComponent.element)
             break
         case GAME_STATUSES.IN_PROGRESS:
-            const gridComponent  = GridComponents()
+            const gridComponent  = GridComponent()
             const resultsPanelComponent = ResultsPanelComponents()
+
+            localeState.cleanupFunctions.push(gridComponent.cleanup)
+            localeState.cleanupFunctions.push(resultsPanelComponent.cleanup)
 
             element.append(resultsPanelComponent.element, settingsComponent.element, gridComponent.element);
             break
