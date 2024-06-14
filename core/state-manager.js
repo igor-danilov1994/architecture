@@ -62,6 +62,7 @@ function _generateToNumber(min, max) {
 }
 
 function _jumpGoogleToNewPosition() {
+    _notifyObservers(EVENTS.GOOGLE_MISS)
     const prevPosition = { ..._state.positions.google };
     const newPositions = { ..._state.positions.google };
 
@@ -242,6 +243,7 @@ const _checkGooglePosition = (newPositions) => {
 }
 
 const  _catchGoogle = (playerNumber) => {
+    _notifyObservers(EVENTS.CATCH_GOOGLE)
     const playerIndex = _getPlayerIndexByNumber(playerNumber)
     _state.points.players[playerIndex]++
     _notifyObservers(EVENTS.SCORE_CHANGED)
