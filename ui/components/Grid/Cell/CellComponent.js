@@ -9,6 +9,7 @@ import {PlayerComponent} from "../../common/Player/Player.component.js";
 import {EVENTS} from "../../../../core/consts.js";
 
 export const CellComponent = (x, y) => {
+    const localState = { rendering: false }
     const element = document.createElement('td');
     element.classList.add('td');
 
@@ -22,13 +23,13 @@ export const CellComponent = (x, y) => {
         const { prevPosition, newPosition } = e.payload;
 
         if ((prevPosition.x === x && prevPosition.y === y) || (newPosition.x === x && newPosition.y === y)) {
-            render(element, x, y);
+            render(element, x, y, localState);
         }
     };
 
     subscribe(observer);
 
-    render(element, x, y);
+    render(element, x, y, localState);
 
     return {
         element,
@@ -38,7 +39,10 @@ export const CellComponent = (x, y) => {
     };
 };
 
-const render = async (element, x, y) => {
+const render = async (element, x, y, localState) => {
+    if (localState.rendering) return
+    localState.rendering = true
+
     try {
         element.innerHTML = '';
 
@@ -66,4 +70,5 @@ const render = async (element, x, y) => {
     } catch (error) {
         console.error('Error during rendering:', error);
     }
+    localState.rendering = false
 };

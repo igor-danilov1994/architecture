@@ -36,8 +36,6 @@ export const GridComponent = () => {
             case 'KeyD':
                 movePlayer(2, MOVING_DIRECTION.RIGHT)
                 break
-            default:
-                console.log('keyUpHandler')
         }
     }
 
