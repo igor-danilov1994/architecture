@@ -1,22 +1,25 @@
+import {ButtonComponent} from "../Button/Button.component.js";
 import {start} from "../../../core/state-manager.js";
+import {GAME_STATUSES} from "../../../core/consts.js";
 
 export const StartComponents = () => {
     const element = document.createElement('div')
 
-    render(element)
+    if(GAME_STATUSES.SETTINGS) {
+        render(element)
+    }
 
     return {element}
 }
 
 const render = async (element) => {
-    const button = document.createElement('button')
-
-    button.innerHTML = 'Start'
-
-    button.addEventListener('click', () => {
+    const onClickHandler = () => {
         start()
-    })
-    element.append(button)
+    }
+
+    const button = ButtonComponent('Start', onClickHandler)
+
+    element.append(button.element)
 
     return element
 }
