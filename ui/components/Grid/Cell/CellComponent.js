@@ -9,7 +9,7 @@ import {PlayerComponent} from "../../common/Player/Player.component.js";
 import {EVENTS} from "../../../../core/consts.js";
 
 export const CellComponent = (x, y) => {
-    const localState = { rendering: false }
+    const localState = { renderVersion: 0 }
     const element = document.createElement('td');
     element.classList.add('td');
 
@@ -40,8 +40,8 @@ export const CellComponent = (x, y) => {
 };
 
 const render = async (element, x, y, localState) => {
-    if (localState.rendering) return
-    localState.rendering = true
+    localState.renderVersion++
+    const currentRenderVersion = localState.renderVersion;
 
     try {
         element.innerHTML = '';
@@ -51,6 +51,9 @@ const render = async (element, x, y, localState) => {
             PlayerComponent(1),
             PlayerComponent(2)
         ]);
+
+        //Abort double render
+        if(currentRenderVersion < localState.renderVersion) return
 
         const [googlePosition, player1Position, player2Position] = await Promise.all([
             getPositionGoogle(),
@@ -70,5 +73,4 @@ const render = async (element, x, y, localState) => {
     } catch (error) {
         console.error('Error during rendering:', error);
     }
-    localState.rendering = false
 };
