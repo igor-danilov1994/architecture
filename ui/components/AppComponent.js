@@ -5,6 +5,7 @@ import {LoseComponent} from "./Lose/Lose.component.js";
 import {getGameStatus, start, subscribe} from "../../core/state-manager.js";
 import {GAME_STATUSES} from "../../core/consts.js";
 import {StartComponents} from "./Start/Start.component.js";
+import {WinComponent} from "./Win/Win.component.js";
 
 export const AppComponent = () => {
     const localeState = { prevGameStatus: null }
@@ -51,6 +52,10 @@ const render = async (element, localeState) => {
             const loseComponent = LoseComponent()
 
             element.append(loseComponent.element)
+            break
+        case GAME_STATUSES.WIN:
+            const winComponent = WinComponent()
+            element.append(winComponent.element)
             break
         default:
           throw new Error('Not implemented!')
