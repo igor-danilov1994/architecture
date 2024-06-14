@@ -1,5 +1,5 @@
 import {startAgain} from "../../../core/state-manager.js";
-
+import {ButtonComponent} from "../Button/Button.component.js";
 
 export const LoseComponent = () => {
     const element = document.createElement('div')
@@ -13,13 +13,9 @@ const render = async (element) => {
     const titleElement = document.createElement('h1')
     titleElement.innerText = 'You are lose!'
 
-    const button = document.createElement('button')
-    button.addEventListener('click', () => {
-        startAgain()
-    })
-    button.innerHTML = 'Start again'
+    const button = ButtonComponent('start again', startAgain)
 
-    element.append(titleElement, button)
+    element.append(titleElement, button.element)
 
     return element
 }
