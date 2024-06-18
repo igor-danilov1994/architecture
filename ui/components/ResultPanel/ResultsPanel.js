@@ -6,7 +6,6 @@ import {
 } from "../../../core/state-manager.js";
 import {EVENTS} from "../../../core/consts.js";
 
-
 export const ResultsPanelComponents =  () => {
     const element = document.createElement('div')
 
