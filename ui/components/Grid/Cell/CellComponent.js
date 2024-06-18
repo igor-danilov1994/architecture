@@ -9,7 +9,7 @@ import {PlayerComponent} from "../../common/Player/Player.component.js";
 import {EVENTS} from "../../../../core/consts.js";
 
 export const CellComponent = (x, y) => {
-    const localState = { renderVersion: 0 }
+    const localState = { renderVersion: 0, isRendering: false }
     const element = document.createElement('td');
     element.classList.add('td');
 
@@ -22,7 +22,11 @@ export const CellComponent = (x, y) => {
 
         const { prevPosition, newPosition } = e.payload;
 
-        if ((prevPosition.x === x && prevPosition.y === y) || (newPosition.x === x && newPosition.y === y)) {
+        if (prevPosition.x === x && prevPosition.y === y) {
+            render(element, x, y, localState);
+        }
+
+        if (newPosition.x === x && newPosition.y === y) {
             render(element, x, y, localState);
         }
     };
@@ -40,12 +44,14 @@ export const CellComponent = (x, y) => {
 };
 
 const render = async (element, x, y, localState) => {
+    if (localState.isRendering) return; // Prevent re-entrance
+
+    localState.isRendering = true;
     localState.renderVersion++
     const currentRenderVersion = localState.renderVersion;
 
+    element.innerHTML = '';
     try {
-        element.innerHTML = '';
-
         const [googleComponent, player1Component, player2Component] = await Promise.all([
             GoogleComponent(),
             PlayerComponent(1),
@@ -72,5 +78,7 @@ const render = async (element, x, y, localState) => {
         }
     } catch (error) {
         console.error('Error during rendering:', error);
+    } finally {
+        localState.isRendering = false; // Reset rendering flag
     }
 };
